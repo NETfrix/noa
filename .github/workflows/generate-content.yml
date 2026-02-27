@@ -1,0 +1,36 @@
+name: Generate Daily Content
+
+on:
+  schedule:
+    # 21:30 UTC = 00:30 Israel time (IST/IDT)
+    - cron: "30 21 * * *"
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Generate content
+        run: |
+          # Generate for tomorrow (since this runs at night)
+          TOMORROW=$(date -d "+1 day" +%m-%d)
+          python generate_offline.py "$TOMORROW"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/
+          git diff --cached --quiet || git commit -m "Add daily content"
+          git push

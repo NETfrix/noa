@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הצעות לפוסטים יומיים — ספריות תל אביב</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>הצעות לפוסטים יומיים</h1>
+        <p class="subtitle">ספריות תל אביב — <a href="https://www.facebook.com/tlv.libraries/" target="_blank" rel="noopener">עמוד הפייסבוק</a></p>
+        <div id="date-display" class="date-display"></div>
+    </header>
+
+    <main>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>טוען תוכן...</p>
+        </div>
+
+        <div id="error" class="error hidden">
+            <p>😕 אין תוכן זמין להיום.</p>
+            <p class="error-detail">ייתכן שהתוכן טרם נוצר עבור תאריך זה. נסו שוב מאוחר יותר.</p>
+        </div>
+
+        <div id="content" class="hidden">
+            <section id="events-section" class="section">
+                <h2>📚 אירועים ספרותיים היום</h2>
+                <div id="events-list" class="events-list"></div>
+            </section>
+
+            <section id="suggestions-section" class="section">
+                <h2>💡 הצעות לפוסטים</h2>
+                <div id="suggestions-list" class="suggestions-list"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>התוכן נוצר באמצעות בינה מלאכותית ומיועד כהשראה בלבד. מומלץ לאמת את הפרטים ההיסטוריים.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
