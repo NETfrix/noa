@@ -6,32 +6,96 @@ document.addEventListener("DOMContentLoaded", () => {
   const eventsList = document.getElementById("events-list");
   const suggestionsList = document.getElementById("suggestions-list");
 
-  const today = new Date();
-  const mm = String(today.getMonth() + 1).padStart(2, "0");
-  const dd = String(today.getDate()).padStart(2, "0");
-  const fileName = `${mm}-${dd}.json`;
+  const datePicker = document.getElementById("date-picker");
+  const prevBtn = document.getElementById("prev-day");
+  const nextBtn = document.getElementById("next-day");
+  const todayBtn = document.getElementById("today-btn");
 
-  dateDisplay.textContent = today.toLocaleDateString("he-IL", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  // Current displayed date (month/day only — year is ignored for content)
+  let currentDate = new Date();
+
+  // Check for ?date=MM-DD URL parameter
+  const params = new URLSearchParams(window.location.search);
+  const dateParam = params.get("date");
+  if (dateParam && /^\d{2}-\d{2}$/.test(dateParam)) {
+    const [mm, dd] = dateParam.split("-").map(Number);
+    if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) {
+      currentDate = new Date(currentDate.getFullYear(), mm - 1, dd);
+    }
+  }
+
+  // Set date picker value and load initial content
+  syncPicker();
+  loadDate(currentDate);
+
+  // Navigation handlers
+  prevBtn.addEventListener("click", () => {
+    currentDate.setDate(currentDate.getDate() - 1);
+    syncPicker();
+    loadDate(currentDate);
   });
 
-  fetch(`content/${fileName}`)
-    .then((res) => {
-      if (!res.ok) throw new Error(res.status);
-      return res.json();
-    })
-    .then((data) => {
-      renderContent(data);
-      loadingEl.classList.add("hidden");
-      contentEl.classList.remove("hidden");
-    })
-    .catch(() => {
-      loadingEl.classList.add("hidden");
-      errorEl.classList.remove("hidden");
+  nextBtn.addEventListener("click", () => {
+    currentDate.setDate(currentDate.getDate() + 1);
+    syncPicker();
+    loadDate(currentDate);
+  });
+
+  todayBtn.addEventListener("click", () => {
+    currentDate = new Date();
+    syncPicker();
+    loadDate(currentDate);
+  });
+
+  datePicker.addEventListener("change", () => {
+    if (!datePicker.value) return;
+    const [y, m, d] = datePicker.value.split("-").map(Number);
+    currentDate = new Date(y, m - 1, d);
+    loadDate(currentDate);
+  });
+
+  function syncPicker() {
+    const y = currentDate.getFullYear();
+    const m = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const d = String(currentDate.getDate()).padStart(2, "0");
+    datePicker.value = `${y}-${m}-${d}`;
+  }
+
+  function loadDate(date) {
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    const fileName = `${mm}-${dd}.json`;
+
+    // Update date display
+    dateDisplay.textContent = date.toLocaleDateString("he-IL", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
+
+    // Reset UI
+    eventsList.innerHTML = "";
+    suggestionsList.innerHTML = "";
+    contentEl.classList.add("hidden");
+    errorEl.classList.add("hidden");
+    loadingEl.classList.remove("hidden");
+
+    fetch(`content/${fileName}`)
+      .then((res) => {
+        if (!res.ok) throw new Error(res.status);
+        return res.json();
+      })
+      .then((data) => {
+        renderContent(data);
+        loadingEl.classList.add("hidden");
+        contentEl.classList.remove("hidden");
+      })
+      .catch(() => {
+        loadingEl.classList.add("hidden");
+        errorEl.classList.remove("hidden");
+      });
+  }
 
   function renderContent(data) {
     if (data.hebrew_date) {

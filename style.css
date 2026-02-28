@@ -46,6 +46,44 @@ header h1 {
     opacity: 0.85;
 }
 
+/* Date navigation */
+.date-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: #eaf2f8;
+    border-bottom: 1px solid #d4e6f1;
+}
+
+.date-nav button {
+    background: #2e86c1;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+
+.date-nav button:hover {
+    background: #1a5276;
+}
+
+.date-nav input[type="date"] {
+    border: 1px solid #aab7c4;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: #fff;
+    color: #2c2c2c;
+    cursor: pointer;
+}
+
 main {
     max-width: 800px;
     margin: 2rem auto;
@@ -209,5 +247,20 @@ footer {
     .event-card,
     .suggestion-card {
         padding: 1rem;
+    }
+
+    .date-nav {
+        gap: 0.3rem;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .date-nav button {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .date-nav input[type="date"] {
+        padding: 0.35rem 0.4rem;
+        font-size: 0.8rem;
     }
 }
